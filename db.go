@@ -459,8 +459,10 @@ func (db *DB) init() error {
 	if _, err := db.ops.writeAt(buf, 0); err != nil {
 		return err
 	}
-	if err := fdatasync(db); err != nil {
-		return err
+	if !db.NoSync || IgnoreNoSync {
+		if err := fdatasync(db); err != nil {
+			return err
+		}
 	}
 
 	return nil
